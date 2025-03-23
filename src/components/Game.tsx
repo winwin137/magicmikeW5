@@ -306,11 +306,17 @@ const Game: React.FC = () => {
     
     // Scroll to Medicaid tile if it exists
     if (medicaidTileRef.current) {
-      // Smooth scroll that preserves sticky header position
-      medicaidTileRef.current.scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'center' 
-      });
+      const scrollContainer = document.querySelector('.scroll-container');
+      if (scrollContainer) {
+        const headerHeight = 300; // Adjust based on your header height
+        const elementPosition = medicaidTileRef.current.getBoundingClientRect().top;
+        const offsetPosition = elementPosition - headerHeight;
+        
+        scrollContainer.scrollBy({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
     }
   };
 
@@ -413,7 +419,7 @@ const Game: React.FC = () => {
       </Header>
       <GameContent>
         <MainContent>
-          <ScrollContainer>
+          <ScrollContainer className="scroll-container">
             <ProgramGrid>
               {programs.map(renderProgram)}
             </ProgramGrid>
