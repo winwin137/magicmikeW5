@@ -51,6 +51,7 @@ import {
   BillionaireBanner,
   RightJustifiedCutsInfo,
   CommitteeText,
+  DefundedOverlay,  // Add this line
 } from '../styles/GameStyles';
 
 // Sound effects
@@ -105,6 +106,7 @@ const sounds = {
 const Game: React.FC = () => {
   const dispatch = useDispatch();
   const videoRef = useRef<HTMLVideoElement>(null);
+  const medicaidTileRef = useRef<HTMLDivElement>(null);
 
   const {
     programs,
@@ -299,10 +301,24 @@ const Game: React.FC = () => {
     unlockAudio();
   };
 
+  const handleToggleMedicaidProtection = () => {
+    dispatch(toggleMedicaidProtection());
+    
+    // Scroll to Medicaid tile if it exists
+    if (medicaidTileRef.current) {
+      // Smooth scroll that preserves sticky header position
+      medicaidTileRef.current.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'center' 
+      });
+    }
+  };
+
   const renderProgram = (program: Program) => {
     const initialBudget = initialPrograms.find(p => p.id === program.id)?.budget || 0;
     const percentageCut = ((initialBudget - program.budget) / initialBudget * 100).toFixed(0);
     const [showPercentage, setShowPercentage] = useState(false);
+    const isDefunded = program.budget === 0;
 
     const handleButtonClick = (amount: number) => {
       handleCutBudget(program.id, amount);
@@ -312,10 +328,26 @@ const Game: React.FC = () => {
     return (
       <ProgramTile 
         key={program.id}
+        ref={program.id === 'medicaid' ? medicaidTileRef : null}
         $isUntouchable={program.isUntouchable}
-        whileHover={!program.isUntouchable ? { scale: 1.02 } : {}}
-        whileTap={!program.isUntouchable ? { scale: 0.98 } : {}}
+        $isDefunded={isDefunded}
+        $abbreviation={program.abbreviation}
+        whileHover={!program.isUntouchable && !isDefunded ? { scale: 1.02 } : {}}
+        whileTap={!program.isUntouchable && !isDefunded ? { scale: 0.98 } : {}}
       >
+        {isDefunded && (
+          <DefundedOverlay 
+            $abbreviation={program.abbreviation} 
+            style={{ 
+              position: 'absolute', 
+              top: 0, 
+              left: 0, 
+              width: '100%', 
+              height: '100%', 
+              zIndex: 10 
+            }} 
+          />
+        )}
         <ProgramName $isUntouchable={program.isUntouchable}>
           <span style={{ fontSize: '1.2em' }}>{program.name}</span>
           <br />
@@ -333,14 +365,14 @@ const Game: React.FC = () => {
           <CutButton
             $amount={10}
             onClick={() => handleButtonClick(10)}
-            disabled={program.isUntouchable || (isGameOver && !isGameStarted)}
+            disabled={program.isUntouchable || isDefunded || (isGameOver && !isGameStarted)}
           >
             -$10B
           </CutButton>
           <CutButton
             $amount={1}
             onClick={() => handleButtonClick(1)}
-            disabled={program.isUntouchable || (isGameOver && !isGameStarted)}
+            disabled={program.isUntouchable || isDefunded || (isGameOver && !isGameStarted)}
           >
             -$1B
           </CutButton>
@@ -456,7 +488,7 @@ const Game: React.FC = () => {
                 <ControlButton onClick={handleStartGame}>
                   Start Over
                 </ControlButton>
-                <ControlButton onClick={() => dispatch(toggleMedicaidProtection())} style={{ background: '#bf0a30' }}>
+                <ControlButton onClick={handleToggleMedicaidProtection} style={{ background: '#bf0a30' }}>
                   Cut Medicaid
                 </ControlButton>
               </div>
@@ -468,4 +500,4 @@ const Game: React.FC = () => {
   );
 };
 
-export default Game; 
+export default Game;

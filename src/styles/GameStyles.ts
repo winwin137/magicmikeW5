@@ -7,6 +7,11 @@ export const GameContainer = styled.div`
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
+  background-image: url(${capitolImage});
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
 `;
 
 export const GameContent = styled.main`
@@ -90,13 +95,13 @@ export const MediaRow = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   gap: 2rem;
 
   @media (max-width: 768px) {
     gap: 1rem;
     flex-wrap: wrap;
-    justify-content: flex-start;
+    justify-content: space-between;
   }
 `;
 
@@ -340,11 +345,12 @@ export const Timer = styled.div<{ $timeRemaining: number }>`
   border: 2px solid ${props => props.$timeRemaining <= 10 ? '#dc3545' : '#bf0a30'};
   letter-spacing: 2px;
   flex-shrink: 0;
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: 0;
 
   @media (max-width: 768px) {
     order: 2;
-    margin: 0;
+    margin: 0 0 0 auto;
   }
 `;
 
@@ -365,10 +371,15 @@ export const ProgramGrid = styled.div`
   }
 `;
 
-export const ProgramTile = styled(motion.div)<{ $isUntouchable?: boolean }>`
-  background: ${props => props.$isUntouchable ? 
-    'linear-gradient(135deg, #bf0a30 0%, #8b0000 100%)' : 
-    'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)'};
+export const ProgramTile = styled(motion.div).withConfig({
+  shouldForwardProp: (prop) => !['$isUntouchable', '$isDefunded', '$abbreviation'].includes(prop),
+})<{ $isUntouchable?: boolean, $isDefunded?: boolean, $abbreviation?: string }>`
+  background: ${props => 
+    props.$isDefunded ? 
+      'linear-gradient(135deg, #888 0%, #999 100%)' :
+    props.$isUntouchable ? 
+      'linear-gradient(135deg, #bf0a30 0%, #8b0000 100%)' : 
+      'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)'};
   border-radius: 8px;
   padding: 0.35rem 0.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -377,20 +388,78 @@ export const ProgramTile = styled(motion.div)<{ $isUntouchable?: boolean }>`
   display: flex;
   flex-direction: column;
   height: fit-content;
-  min-height: 130px;
-  overflow: hidden;
-  
-  @media (max-width: 480px) {
-    padding: 0.25rem 0.25rem;
-    border-width: 1px;
-    min-height: 110px;
+  position: relative;
+  opacity: ${props => props.$isDefunded ? 0.95 : 1};
+  transition: all 0.3s ease;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.15);
+    pointer-events: none;
+    z-index: 1;
   }
-  
+
   &:hover {
-    transform: ${props => props.$isUntouchable ? 'none' : 'translateY(-2px)'};
-    box-shadow: ${props => props.$isUntouchable ? 
+    transform: ${props => props.$isUntouchable || props.$isDefunded ? 'none' : 'translateY(-2px)'};
+    box-shadow: ${props => props.$isUntouchable || props.$isDefunded ? 
       '0 2px 4px rgba(0, 0, 0, 0.1)' : 
       '0 4px 6px rgba(0, 0, 0, 0.15)'};
+  }
+
+  ${props => props.$isDefunded && `
+    &::after {
+      content: '${props.$abbreviation ? `${props.$abbreviation} ` : ''}DEFUNDED';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-15deg);
+      color: rgba(139, 0, 0, 0.85);
+      font-family: 'Impact', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+      z-index: 10;
+      pointer-events: none;
+      white-space: nowrap;
+      padding: 0.25rem 0.5rem;
+    }
+  `}
+`;
+
+export const DefundedOverlay = styled.div<{ $abbreviation?: string }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(2px);
+  
+  &::after {
+    content: '${props => props.$abbreviation ? `${props.$abbreviation} ` : ''}DEFUNDED';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-15deg);
+    color: rgba(139, 0, 0, 0.85);
+    font-family: 'Impact', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    -webkit-text-stroke: 1px rgba(0, 0, 0, 0.3);
+    padding: 0.25rem 0.5rem;
+    white-space: nowrap;
   }
 `;
 
@@ -589,32 +658,6 @@ export const Overlay = styled(motion.div)`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-
-export const DefundedOverlay = styled.div<{ abbreviation?: string }>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(0, 0, 0, 0.7);
-  color: white;
-  font-family: 'Impact', sans-serif;
-  font-size: 2.5rem;
-  text-transform: uppercase;
-  z-index: 10;
-  pointer-events: none;
-  text-align: center;
-  padding: 1rem;
-  
-  &::before {
-    content: '${props => props.abbreviation ? `${props.abbreviation} DEFUNDED` : 'DEFUNDED'}';
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    line-height: 1.2;
-  }
 `;
 
 export const Footer = styled.footer`
