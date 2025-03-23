@@ -305,17 +305,10 @@ const Game: React.FC = () => {
     
     // Scroll to Medicaid tile if it exists
     if (medicaidTileRef.current) {
-      const scrollContainer = document.querySelector('.scroll-container');
-      if (scrollContainer) {
-        const headerHeight = 300; // Adjust based on your header height
-        const elementPosition = medicaidTileRef.current.getBoundingClientRect().top;
-        const offsetPosition = elementPosition - headerHeight;
-        
-        scrollContainer.scrollBy({
-          top: offsetPosition,
-          behavior: 'smooth'
-        });
-      }
+      medicaidTileRef.current.scrollIntoView({ 
+        behavior: 'smooth', 
+        block: 'start' 
+      });
     }
   };
 
@@ -391,12 +384,11 @@ const Game: React.FC = () => {
             </VideoContainer>
             <Timer $timeRemaining={timeRemaining}>{timeRemaining}s</Timer>
           </MediaRow>
-          <ProgressBarContainer>
-            <ProgressBar $progress={(currentCuts / targetCuts) * 100} />
-          </ProgressBarContainer>
           <CommitteeText>
              Cut $88B from E&CC Programs without touching MEDICAID 
-          </CommitteeText>
+          </CommitteeText><ProgressBarContainer>
+            <ProgressBar $progress={(currentCuts / targetCuts) * 100} />
+          </ProgressBarContainer>
           <RightJustifiedCutsInfo>
             <div>${(targetCuts - currentCuts).toFixed(1)}B</div>
             <div>${currentCuts.toFixed(1)}B</div>
