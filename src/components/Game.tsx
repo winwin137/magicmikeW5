@@ -51,7 +51,6 @@ import {
   BillionaireBanner,
   RightJustifiedCutsInfo,
   CommitteeText,
-  DefundedOverlay,  // Add this line
 } from '../styles/GameStyles';
 
 // Sound effects
@@ -341,19 +340,6 @@ const Game: React.FC = () => {
         whileHover={!program.isUntouchable && !isDefunded ? { scale: 1.02 } : {}}
         whileTap={!program.isUntouchable && !isDefunded ? { scale: 0.98 } : {}}
       >
-        {isDefunded && (
-          <DefundedOverlay 
-            $abbreviation={program.abbreviation} 
-            style={{ 
-              position: 'absolute', 
-              top: 0, 
-              left: 0, 
-              width: '100%', 
-              height: '100%', 
-              zIndex: 10 
-            }} 
-          />
-        )}
         <ProgramName $isUntouchable={program.isUntouchable}>
           <span style={{ fontSize: '1.2em' }}>{program.name}</span>
           <br />

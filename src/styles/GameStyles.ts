@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import { motion } from 'framer-motion';
 import capitolImage from '../assets/images/capitol.jpg';
 
@@ -52,7 +52,7 @@ export const Header = styled.header`
   right: 0;
   z-index: 100;
   background: #f5f5f5;
-  background-image: url('/src/assets/images/trumpStealing.jpg');
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('/src/assets/images/trumpStealing.jpg');
   background-size: cover;
   background-position: center;
   padding: 1rem 1rem 0.5rem;
@@ -136,10 +136,10 @@ export const Title = styled.h1`
   text-transform: uppercase;
   letter-spacing: 1px;
   text-shadow: 
-    -1px -1px 0 white,  
-     1px -1px 0 white,
-    -1px  1px 0 white,
-     1px  1px 0 white,
+    -1px -1px 0 black,  
+     1px -1px 0 black,
+    -1px  1px 0 black,
+     1px  1px 0 black,
      3px 3px 0 rgba(139, 0, 0, 0.3);
   padding: 0 0.5rem;
   line-height: 1.1;
@@ -160,10 +160,10 @@ export const Subtitle = styled.h2`
   font-family: 'Impact', 'Haettenschweiler', 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', sans-serif;
   letter-spacing: 1px;
   text-shadow: 
-    -1px -1px 0 white,  
-     1px -1px 0 white,
-    -1px  1px 0 white,
-     1px  1px 0 white,
+    -1px -1px 0 black,  
+     1px -1px 0 black,
+    -1px  1px 0 black,
+     1px  1px 0 black,
      1px 1px 0 rgba(139, 0, 0, 0.2);
   padding: 0 0.5rem;
   line-height: 1.2;
@@ -338,7 +338,11 @@ export const Timer = styled.div<{ $timeRemaining: number }>`
   font-family: 'Impact', 'Haettenschweiler', 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', sans-serif;
   color: ${props => props.$timeRemaining <= 10 ? '#dc3545' : '#bf0a30'};
   transition: color 0.3s ease;
-  text-shadow: 2px 2px 4px rgba(139, 0, 0, 0.3);
+  text-shadow: 
+    -1px -1px 0 black,  
+     1px -1px 0 black,
+    -1px  1px 0 black,
+     1px  1px 0 black;
   background: ${props => props.$timeRemaining <= 10 ? 'rgba(220, 53, 69, 0.1)' : 'rgba(191, 10, 48, 0.1)'};
   padding: 0.25rem 0.75rem;
   border-radius: 8px;
@@ -383,12 +387,53 @@ export const ProgramTile = styled(motion.div).withConfig({
   border-radius: 8px;
   padding: 0.35rem 0.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  
+  ${props => props.$isDefunded && css`
+    position: relative;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(255, 255, 255, 0.2);
+      z-index: 5;
+      border-radius: 6px;
+      pointer-events: none;
+    }
+    
+    &::after {
+      content: "${props => props.$abbreviation ? `${props.$abbreviation} ` : ''}DEFUNDED";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-15deg);
+      color: rgba(139, 0, 0, 0.85);
+      font-family: 'Impact', sans-serif;
+      font-size: 2rem; /* Larger base font size */
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+      z-index: 10;
+      pointer-events: none;
+      white-space: nowrap;
+      padding: 0.25rem 0.5rem;
+      
+      @media (max-width: 480px) {
+        font-size: 1.8rem; /* Still large on mobile but slightly adjusted */
+      }
+    }
+  `}
+
   cursor: ${props => props.$isUntouchable ? 'not-allowed' : 'pointer'};
   border: 2px solid ${props => props.$isUntouchable ? '#8b0000' : '#002868'};
   display: flex;
   flex-direction: column;
   height: fit-content;
-  position: relative;
   opacity: ${props => props.$isDefunded ? 0.95 : 1};
   transition: all 0.3s ease;
 
@@ -409,57 +454,6 @@ export const ProgramTile = styled(motion.div).withConfig({
     box-shadow: ${props => props.$isUntouchable || props.$isDefunded ? 
       '0 2px 4px rgba(0, 0, 0, 0.1)' : 
       '0 4px 6px rgba(0, 0, 0, 0.15)'};
-  }
-
-  ${props => props.$isDefunded && `
-    &::after {
-      content: '${props.$abbreviation ? `${props.$abbreviation} ` : ''}DEFUNDED';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(-15deg);
-      color: rgba(139, 0, 0, 0.85);
-      font-family: 'Impact', sans-serif;
-      font-size: 1.8rem;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-      z-index: 10;
-      pointer-events: none;
-      white-space: nowrap;
-      padding: 0.25rem 0.5rem;
-    }
-  `}
-`;
-
-export const DefundedOverlay = styled.div<{ $abbreviation?: string }>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 10;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05));
-  backdrop-filter: blur(2px);
-  
-  &::after {
-    content: '${props => props.$abbreviation ? `${props.$abbreviation} ` : ''}DEFUNDED';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-15deg);
-    color: rgba(139, 0, 0, 0.85);
-    font-family: 'Impact', sans-serif;
-    font-size: 1.2rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    -webkit-text-stroke: 1px rgba(0, 0, 0, 0.3);
-    padding: 0.25rem 0.5rem;
-    white-space: nowrap;
   }
 `;
 
@@ -685,7 +679,7 @@ export const CutsInfoContainer = styled.div`
   font-family: 'Impact', 'Haettenschweiler', 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', sans-serif;
   text-transform: uppercase;
   letter-spacing: 1px;
-  text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+  text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
 
   @media (max-width: 768px) {
     bottom: -10rem; 
@@ -705,7 +699,7 @@ export const RightJustifiedCutsInfo = styled.div`
   font-family: 'Impact', 'Haettenschweiler', 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', sans-serif;
   text-transform: uppercase;
   letter-spacing: 1px;
-  text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+  text-shadow: -1px -1px 0 black, 1px -1px 0 black, -1px 1px 0 black, 1px 1px 0 black;
 
   > div:first-child {
     text-align: left;
@@ -720,16 +714,17 @@ export const RightJustifiedCutsInfo = styled.div`
 
 export const CommitteeText = styled.div`
   text-align: center; 
+  width: 100%;
   color: #bf0a30; 
   font-family: 'Impact', sans-serif;
-  font-size: clamp(0.5rem, 4vw, 1rem);
+  font-size: clamp(1rem, 5vw, 1.5rem);
   margin-top: 0.3rem;
   margin-bottom: 0.3rem;
   text-transform: uppercase;
   letter-spacing: 1px;
   text-shadow: 
-    -1px -1px 0 white, 
-    1px -1px 0 white, 
-    -1px 1px 0 white, 
-    1px 1px 0 white;
+    -1px -1px 0 black, 
+    1px -1px 0 black, 
+    -1px 1px 0 black, 
+    1px 1px 0 black;
 `;
