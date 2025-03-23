@@ -33,6 +33,11 @@ export const ScrollContainer = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 0;
+  max-height: calc(100vh - 300px); /* Adjust height as needed */
+  
+  @media (max-width: 768px) {
+    max-height: calc(100vh - 250px);
+  }
 `;
 
 export const Header = styled.header`
@@ -42,6 +47,9 @@ export const Header = styled.header`
   right: 0;
   z-index: 100;
   background: #f5f5f5;
+  background-image: url('/src/assets/images/trumpStealing.jpg');
+  background-size: cover;
+  background-position: center;
   padding: 1rem 1rem 0.5rem;
   width: 100%;
   display: flex;
@@ -56,9 +64,22 @@ export const HeaderContent = styled.div`
   max-width: 1200px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 1rem;
-  margin-bottom: 1rem;
+
+  @media (max-width: 768px) {
+    gap: 0.75rem;
+  }
+`;
+
+export const HeaderContentWrapper = styled.div`
+  width: 100%;
+  max-width: 1200px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
 
   @media (max-width: 768px) {
     gap: 0.75rem;
@@ -69,13 +90,13 @@ export const MediaRow = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 2rem;
 
   @media (max-width: 768px) {
     gap: 1rem;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-start;
   }
 `;
 
@@ -109,7 +130,12 @@ export const Title = styled.h1`
   font-family: 'Impact', 'Haettenschweiler', 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', sans-serif;
   text-transform: uppercase;
   letter-spacing: 1px;
-  text-shadow: 3px 3px 0 rgba(139, 0, 0, 0.3);
+  text-shadow: 
+    -1px -1px 0 white,  
+     1px -1px 0 white,
+    -1px  1px 0 white,
+     1px  1px 0 white,
+     3px 3px 0 rgba(139, 0, 0, 0.3);
   padding: 0 0.5rem;
   line-height: 1.1;
   hyphens: auto;
@@ -128,7 +154,12 @@ export const Subtitle = styled.h2`
   color: #dc3545;
   font-family: 'Impact', 'Haettenschweiler', 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', sans-serif;
   letter-spacing: 1px;
-  text-shadow: 1px 1px 0 rgba(139, 0, 0, 0.2);
+  text-shadow: 
+    -1px -1px 0 white,  
+     1px -1px 0 white,
+    -1px  1px 0 white,
+     1px  1px 0 white,
+     1px 1px 0 rgba(139, 0, 0, 0.2);
   padding: 0 0.5rem;
   line-height: 1.2;
 
@@ -268,26 +299,45 @@ export const ProgressBarContainer = styled.div`
   background: #ddd;
   border-radius: 5px;
   overflow: hidden;
+  position: relative;
+
+  &::before {
+    content: '$0';
+    position: absolute;
+    left: 0;
+    top: -20px;
+    font-size: 0.8rem;
+    color: #666;
+  }
+
+  &::after {
+    content: '$88 Billion';
+    position: absolute;
+    right: 0;
+    top: -20px;
+    font-size: 0.8rem;
+    color: #666;
+  }
 `;
 
-export const ProgressBar = styled.div<{ progress: number }>`
-  width: ${props => props.progress}%;
+export const ProgressBar = styled.div<{ $progress: number }>`
+  width: ${props => props.$progress}%;
   height: 100%;
-  background: ${props => props.progress >= 100 ? '#4CAF50' : '#2196F3'};
+  background: ${props => props.$progress >= 100 ? '#4CAF50' : '#bf0a30'};
   transition: width 0.3s ease;
 `;
 
-export const Timer = styled.div<{ timeRemaining: number }>`
+export const Timer = styled.div<{ $timeRemaining: number }>`
   font-size: clamp(1.5rem, 3vw, 2.5rem);
   font-weight: bold;
   font-family: 'Impact', 'Haettenschweiler', 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', sans-serif;
-  color: ${props => props.timeRemaining <= 10 ? '#dc3545' : '#bf0a30'};
+  color: ${props => props.$timeRemaining <= 10 ? '#dc3545' : '#bf0a30'};
   transition: color 0.3s ease;
   text-shadow: 2px 2px 4px rgba(139, 0, 0, 0.3);
-  background: ${props => props.timeRemaining <= 10 ? 'rgba(220, 53, 69, 0.1)' : 'rgba(191, 10, 48, 0.1)'};
+  background: ${props => props.$timeRemaining <= 10 ? 'rgba(220, 53, 69, 0.1)' : 'rgba(191, 10, 48, 0.1)'};
   padding: 0.25rem 0.75rem;
   border-radius: 8px;
-  border: 2px solid ${props => props.timeRemaining <= 10 ? '#dc3545' : '#bf0a30'};
+  border: 2px solid ${props => props.$timeRemaining <= 10 ? '#dc3545' : '#bf0a30'};
   letter-spacing: 2px;
   flex-shrink: 0;
   margin: 0 auto;
@@ -315,15 +365,15 @@ export const ProgramGrid = styled.div`
   }
 `;
 
-export const ProgramTile = styled(motion.div)<{ isUntouchable?: boolean }>`
-  background: ${props => props.isUntouchable ? 
+export const ProgramTile = styled(motion.div)<{ $isUntouchable?: boolean }>`
+  background: ${props => props.$isUntouchable ? 
     'linear-gradient(135deg, #bf0a30 0%, #8b0000 100%)' : 
     'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)'};
   border-radius: 8px;
   padding: 0.35rem 0.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  cursor: ${props => props.isUntouchable ? 'not-allowed' : 'pointer'};
-  border: 2px solid ${props => props.isUntouchable ? '#8b0000' : '#002868'};
+  cursor: ${props => props.$isUntouchable ? 'not-allowed' : 'pointer'};
+  border: 2px solid ${props => props.$isUntouchable ? '#8b0000' : '#002868'};
   display: flex;
   flex-direction: column;
   height: fit-content;
@@ -337,16 +387,24 @@ export const ProgramTile = styled(motion.div)<{ isUntouchable?: boolean }>`
   }
   
   &:hover {
-    transform: ${props => props.isUntouchable ? 'none' : 'translateY(-2px)'};
-    box-shadow: ${props => props.isUntouchable ? 
+    transform: ${props => props.$isUntouchable ? 'none' : 'translateY(-2px)'};
+    box-shadow: ${props => props.$isUntouchable ? 
       '0 2px 4px rgba(0, 0, 0, 0.1)' : 
       '0 4px 6px rgba(0, 0, 0, 0.15)'};
   }
 `;
 
-export const ProgramName = styled.h3<{ isUntouchable?: boolean }>`
+export const ProgramImage = styled.img`
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+`;
+
+export const ProgramName = styled.div<{ $isUntouchable?: boolean }>`
   margin: 0;
-  color: ${props => props.isUntouchable ? '#ffffff' : '#1a1a1a'};
+  color: ${props => props.$isUntouchable ? '#ffffff' : '#1a1a1a'};
   font-family: 'Impact', sans-serif;
   line-height: 0.9;
   text-align: center;
@@ -376,17 +434,23 @@ export const ProgramName = styled.h3<{ isUntouchable?: boolean }>`
   }
 `;
 
-export const ProgramBudget = styled.div<{ isUntouchable?: boolean }>`
-  font-size: clamp(0.8rem, 2.5vw, 1rem);
+export const ProgramBudget = styled.div<{ $isUntouchable?: boolean }>`
+  font-size: clamp(1.2rem, 3vw, 1.1rem);
   font-weight: bold;
-  color: ${props => props.isUntouchable ? '#ffffff' : '#28a745'};
+  color: ${props => props.$isUntouchable ? '#ffffff' : '#28a745'};
   margin: 0.15rem 0;
   text-align: center;
   padding: 0 0.25rem;
+
+  span {
+    font-size: clamp(1.2rem, 3vw, 1.1rem);
+    color: #bf0a30;
+    margin-left: 0.5rem;
+  }
 `;
 
-export const ProgramDescription = styled.p<{ isUntouchable?: boolean }>`
-  color: ${props => props.isUntouchable ? 'rgba(255, 255, 255, 0.8)' : '#666'};
+export const ProgramDescription = styled.p<{ $isUntouchable?: boolean }>`
+  color: ${props => props.$isUntouchable ? 'rgba(255, 255, 255, 0.8)' : '#666'};
   font-size: clamp(0.7rem, 2vw, 0.8rem);
   margin: 0;
   padding: 0 0.25rem;
@@ -413,8 +477,8 @@ export const ButtonContainer = styled.div`
   }
 `;
 
-export const CutButton = styled.button<{ amount: number }>`
-  background: ${props => props.amount === 10 ? '#bf0a30' : '#002868'};
+export const CutButton = styled.button<{ $amount: number }>`
+  background: ${props => props.$amount === 10 ? '#bf0a30' : '#002868'};
   color: white;
   border: none;
   border-radius: 4px;
@@ -431,7 +495,7 @@ export const CutButton = styled.button<{ amount: number }>`
   }
 
   &:hover {
-    background: ${props => props.amount === 10 ? '#8b0000' : '#001845'};
+    background: ${props => props.$amount === 10 ? '#8b0000' : '#001845'};
     transform: translateY(-1px);
   }
 
@@ -477,9 +541,8 @@ export const ControlButton = styled.button`
 
 export const Modal = styled(motion.div)`
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: calc(50% - 150px);  /* Adjust based on half the height */
+  left: calc(50% - 200px - 2rem); /* Subtract 2rem from left position */
   background: white;
   padding: 2rem;
   border-radius: 12px;
@@ -507,6 +570,8 @@ export const Modal = styled(motion.div)`
   }
 
   @media (max-width: 480px) {
+    top: calc(50% - 100px);
+    left: calc(50% - 150px - 2rem);
     padding: 1.5rem;
     max-width: 85%;
     gap: 0.75rem;
@@ -526,14 +591,102 @@ export const Overlay = styled(motion.div)`
   align-items: center;
 `;
 
+export const DefundedOverlay = styled.div<{ abbreviation?: string }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  font-family: 'Impact', sans-serif;
+  font-size: 2.5rem;
+  text-transform: uppercase;
+  z-index: 10;
+  pointer-events: none;
+  text-align: center;
+  padding: 1rem;
+  
+  &::before {
+    content: '${props => props.abbreviation ? `${props.abbreviation} DEFUNDED` : 'DEFUNDED'}';
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    line-height: 1.2;
+  }
+`;
+
 export const Footer = styled.footer`
   width: 100%;
   text-align: center;
-  padding: 1rem;
+  padding: 3rem 3rem 8rem;
   margin-top: auto;
   font-family: 'Impact', 'Haettenschweiler', 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', sans-serif;
   color: #bf0a30;
   font-size: clamp(0.8rem, 2vw, 1rem);
   opacity: 0.8;
   flex-shrink: 0;
-`; 
+`;
+
+export const CutsInfoContainer = styled.div`
+  position: absolute;
+  bottom: -15rem; 
+  right: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: clamp(1rem, 4vw, 1.5rem);
+  color: #bf0a30;
+  font-family: 'Impact', 'Haettenschweiler', 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+
+  @media (max-width: 768px) {
+    bottom: -10rem; 
+  }
+`;
+
+export const RightJustifiedCutsInfo = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  gap: 2rem;
+  font-size: clamp(1rem, 4vw, 1.5rem);
+  color: #bf0a30;
+  margin-top: 0.5rem;
+  font-family: 'Impact', 'Haettenschweiler', 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
+
+  > div:first-child {
+    text-align: left;
+    flex-grow: 1;
+  }
+
+  > div:last-child {
+    text-align: right;
+    flex-grow: 1;
+  }
+`;
+
+export const CommitteeText = styled.div`
+  text-align: center; 
+  color: #bf0a30; 
+  font-family: 'Impact', sans-serif;
+  font-size: clamp(0.5rem, 4vw, 1rem);
+  margin-top: 0.3rem;
+  margin-bottom: 0.3rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 
+    -1px -1px 0 white, 
+    1px -1px 0 white, 
+    -1px 1px 0 white, 
+    1px 1px 0 white;
+`;

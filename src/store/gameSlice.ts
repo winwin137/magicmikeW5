@@ -37,41 +37,67 @@ const gameSlice = createSlice({
       state.programs = initialPrograms;
     },
     toggleMedicaidProtection: (state) => {
-      const medicaid = state.programs.find(p => p.id === 'medicaid');
-      if (medicaid) {
-        medicaid.isUntouchable = false;
+      try {
+        const medicaid = state.programs.find(p => p.id === 'medicaid');
+        if (medicaid) {
+          medicaid.isUntouchable = false;
+          console.log('Medicaid protection toggled off');
+        } else {
+          console.error('Medicaid program not found');
+        }
+      } catch (error) {
+        console.error('Error in toggleMedicaidProtection:', error);
       }
     },
     cutBudget: (state, action: PayloadAction<{ programId: string; amount: CutAmount }>) => {
-      const program = state.programs.find(p => p.id === action.payload.programId);
-      if (program && !program.isUntouchable) {
+      try {
+        const program = state.programs.find(p => p.id === action.payload.programId);
+        if (!program) {
+          console.error(`Program with ID ${action.payload.programId} not found`);
+          return;
+        }
+
+        if (program.isUntouchable) {
+          console.warn(`Attempted to cut untouchable program: ${program.name}`);
+          return;
+        }
+
+        // Precise rounding to handle floating point issues
+        const roundToThreeDecimals = (num: number) => Math.round(num * 1000) / 1000;
+
         let cut: number = action.payload.amount;
         
         // Special handling for programs with less than 1B budget
         if (program.budget < 1 && action.payload.amount === 1) {
-          cut = program.budget;
+          cut = roundToThreeDecimals(program.budget);
         } else {
-          cut = Math.min(action.payload.amount, program.budget);
+          cut = roundToThreeDecimals(Math.min(action.payload.amount, program.budget));
         }
         
         // Special handling for Medicaid to only cut what's needed to reach $88B exactly
         if (program.id === 'medicaid') {
-          const remainingNeeded = state.targetCuts - state.currentCuts;
+          const remainingNeeded = roundToThreeDecimals(state.targetCuts - state.currentCuts);
+          console.log(`Medicaid cut - Remaining needed: ${remainingNeeded}, Current budget: ${program.budget}`);
+          
           if (remainingNeeded > 0) {
-            cut = Math.min(cut, remainingNeeded);
+            cut = roundToThreeDecimals(Math.min(cut, remainingNeeded));
           } else {
             cut = 0; // Already at or above $88B, don't cut more
           }
         }
         
-        program.budget -= cut;
-        state.currentCuts += cut;
+        program.budget = roundToThreeDecimals(program.budget - cut);
+        state.currentCuts = roundToThreeDecimals(state.currentCuts + cut);
         
         // Auto-zero if less than 0.001B remaining
         if (program.budget > 0 && program.budget < 0.001) {
-          state.currentCuts += program.budget;
+          state.currentCuts = roundToThreeDecimals(state.currentCuts + program.budget);
           program.budget = 0;
         }
+
+        console.log(`Cut ${cut}B from ${program.name}. New budget: ${program.budget}B`);
+      } catch (error) {
+        console.error('Error in cutBudget:', error);
       }
     },
     updateTimer: (state) => {

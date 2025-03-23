@@ -35,8 +35,6 @@ import {
   TitleSection,
   Title,
   Subtitle,
-  CountersRow,
-  Counter,
   Timer,
   ProgramGrid,
   Footer,
@@ -51,6 +49,8 @@ import {
   Overlay,
   ControlButton,
   BillionaireBanner,
+  RightJustifiedCutsInfo,
+  CommitteeText,
 } from '../styles/GameStyles';
 
 // Sound effects
@@ -300,40 +300,46 @@ const Game: React.FC = () => {
   };
 
   const renderProgram = (program: Program) => {
-    const initialBudget = initialPrograms.find(p => p.id === program.id)?.budget || program.budget;
-    const percentageCut = ((initialBudget - program.budget) / initialBudget * 100).toFixed(1);
-    
+    const initialBudget = initialPrograms.find(p => p.id === program.id)?.budget || 0;
+    const percentageCut = ((initialBudget - program.budget) / initialBudget * 100).toFixed(0);
+    const [showPercentage, setShowPercentage] = useState(false);
+
+    const handleButtonClick = (amount: number) => {
+      handleCutBudget(program.id, amount);
+      setShowPercentage(true);
+    };
+
     return (
-      <ProgramTile
+      <ProgramTile 
         key={program.id}
-        isUntouchable={program.isUntouchable}
+        $isUntouchable={program.isUntouchable}
         whileHover={!program.isUntouchable ? { scale: 1.02 } : {}}
         whileTap={!program.isUntouchable ? { scale: 0.98 } : {}}
       >
-        <ProgramName isUntouchable={program.isUntouchable}>
+        <ProgramName $isUntouchable={program.isUntouchable}>
           <span style={{ fontSize: '1.2em' }}>{program.name}</span>
           <br />
           <span style={{ fontSize: '0.9em', opacity: 0.9 }}>{program.description}</span>
         </ProgramName>
-        <ProgramBudget isUntouchable={program.isUntouchable}>
-          ${program.budget.toFixed(3)}B
-          {percentageCut !== '0.0' && (
+        <ProgramBudget $isUntouchable={program.isUntouchable}>
+          ${program.budget.toFixed(1)}B
+          {showPercentage && percentageCut !== '0' && (
             <span style={{ color: '#bf0a30', marginLeft: '0.5rem' }}>
-              (-{percentageCut}%)
+              -{percentageCut}%
             </span>
           )}
         </ProgramBudget>
         <ButtonContainer>
           <CutButton
-            amount={10}
-            onClick={() => handleCutBudget(program.id, 10)}
+            $amount={10}
+            onClick={() => handleButtonClick(10)}
             disabled={program.isUntouchable || (isGameOver && !isGameStarted)}
           >
             -$10B
           </CutButton>
           <CutButton
-            amount={1}
-            onClick={() => handleCutBudget(program.id, 1)}
+            $amount={1}
+            onClick={() => handleButtonClick(1)}
             disabled={program.isUntouchable || (isGameOver && !isGameStarted)}
           >
             -$1B
@@ -349,7 +355,6 @@ const Game: React.FC = () => {
         <HeaderContent>
           <TitleSection>
             <Title>MAGA MIKE'S MEDICAID MONEY MAGIC MATH</Title>
-            <Subtitle>The Energy and Commerce Committee Must Cut $88 Billion by Law</Subtitle>
           </TitleSection>
           <MediaRow>
             <VideoContainer>
@@ -360,15 +365,18 @@ const Game: React.FC = () => {
                 loop
               />
             </VideoContainer>
-            <Timer timeRemaining={timeRemaining}>{timeRemaining}s</Timer>
-            <CountersRow>
-              <Counter>CURRENT CUTS: ${currentCuts.toFixed(3)}B</Counter>
-              <Counter>REMAINING: ${(targetCuts - currentCuts).toFixed(3)}B</Counter>
-            </CountersRow>
+            <Timer $timeRemaining={timeRemaining}>{timeRemaining}s</Timer>
           </MediaRow>
           <ProgressBarContainer>
-            <ProgressBar progress={(currentCuts / targetCuts) * 100} />
+            <ProgressBar $progress={(currentCuts / targetCuts) * 100} />
           </ProgressBarContainer>
+          <CommitteeText>
+             Cut $88B from E&CC Programs without touching MEDICAID 
+          </CommitteeText>
+          <RightJustifiedCutsInfo>
+            <div>${(targetCuts - currentCuts).toFixed(1)}B</div>
+            <div>${currentCuts.toFixed(1)}B</div>
+          </RightJustifiedCutsInfo>
         </HeaderContent>
       </Header>
       <GameContent>
@@ -378,7 +386,7 @@ const Game: React.FC = () => {
               {programs.map(renderProgram)}
             </ProgramGrid>
             <Footer>
-              © 2024 MAGA Mike's Medicaid Money Magic Math - All Rights Reserved
+              2024 MAGA Mike's Medicaid Money Magic Math - All Rights Reserved
             </Footer>
           </ScrollContainer>
         </MainContent>
@@ -396,10 +404,10 @@ const Game: React.FC = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.5, opacity: 0 }}
             >
-              <h2>{hasWon ? '🤑 Game Over - Billionaires Win!' : '❌ Failed to Follow the Law!'}</h2>
+              <h2>{hasWon ? ' Game Over - Billionaires Win!' : ' Failed to Follow the Law!'}</h2>
               {hasWon ? (
                 <BillionaireBanner>
-                  <span>🤑 Billionaire Tax Avoidance Victory! 🤑</span>
+                  <span> Billionaire Tax Avoidance Victory! </span>
                   <span>While Public Programs Were Cut, The Ultra-Wealthy Saved ${(targetCuts * 1.5).toFixed(1)}B in Taxes</span>
                 </BillionaireBanner>
               ) : (
