@@ -604,20 +604,38 @@ export const ControlButton = styled.button`
 
 export const Modal = styled(motion.div)`
   position: fixed;
-  top: calc(50% - 150px);  /* Adjust based on half the height */
-  left: calc(50% - 200px - 2rem); /* Subtract 2rem from left position */
+  top: calc(50% - 300px);  /* Adjusted for double height */
+  left: calc(50% - 200px - 2rem);
   background: white;
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   max-width: 90%;
   width: 400px;
+  height: 470px; /* Doubled from assumed 300px */
   z-index: 1000;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+  overflow-y: auto; /* Added to allow scrolling if content exceeds height */      
+
+/* New styles for video viewport */
+  .video-viewport {
+    width: 100%;
+    height: 220px; /* Adjust as needed */
+    margin: 1rem 0;
+    overflow: hidden;
+    border-radius: 8px;
+  }
+
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
 
   h2 {
     font-family: 'Impact', 'Haettenschweiler', 'Franklin Gothic Bold', Charcoal, sans-serif;
@@ -660,8 +678,8 @@ export const Footer = styled.footer`
   padding: 3rem 3rem 8rem;
   margin-top: auto;
   font-family: 'Impact', 'Haettenschweiler', 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', sans-serif;
-  color: #bf0a30;
-  font-size: clamp(0.8rem, 2vw, 1rem);
+  color: #ffffff;
+  font-size: clamp(0.8rem, 2vw, 1.2rem);
   opacity: 0.8;
   flex-shrink: 0;
 `;
@@ -692,10 +710,10 @@ export const RightJustifiedCutsInfo = styled.div`
   justify-content: flex-end;
   align-items: center;
   width: 100%;
-  gap: 2rem;
-  font-size: clamp(1rem, 4vw, 1.5rem);
+  gap: 1rem;
+  font-size: clamp(2rem, 5vw, 2.5rem);
   color: #bf0a30;
-  margin-top: 0.5rem;
+  margin-top: 0.1rem;
   font-family: 'Impact', 'Haettenschweiler', 'Franklin Gothic Bold', Charcoal, 'Helvetica Inserat', 'Bitstream Vera Sans Bold', 'Arial Black', sans-serif;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -719,7 +737,7 @@ export const CommitteeText = styled.div`
   font-family: 'Impact', sans-serif;
   font-size: clamp(1rem, 5vw, 1.5rem);
   margin-top: 0.3rem;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.1rem;
   text-transform: uppercase;
   letter-spacing: 1px;
   text-shadow: 

@@ -10,6 +10,7 @@ import crowdCheerSound from '../assets/sounds/crowd-cheer.mp3';
 import crowdAwwSound from '../assets/sounds/crowd-aww.mp3';
 import sketchyMikeVideo from '../assets/videos/sketchy-mike.mov';
 import challengeVideo from '../assets/videos/challenge.mov';
+import trumpVideo from '../assets/videos/trump.MOV';
 
 import {
   startGame,
@@ -106,6 +107,7 @@ const Game: React.FC = () => {
   const dispatch = useDispatch();
   const videoRef = useRef<HTMLVideoElement>(null);
   const medicaidTileRef = useRef<HTMLDivElement>(null);
+  const trumpVideoRef = useRef<HTMLVideoElement>(null);
 
   const {
     programs,
@@ -144,6 +146,26 @@ const Game: React.FC = () => {
       }
     }
   }, [isSoundEnabled, isGameStarted]);
+
+  useEffect(() => {
+    if (hasWon && trumpVideoRef.current) {
+      // Unmute the video
+      trumpVideoRef.current.muted = false;
+      
+      // Try to play with audio
+      trumpVideoRef.current.play().catch(error => {
+        console.error("Video autoplay with audio failed:", error);
+        
+        // Fallback: add user interaction to play video
+        const handleUserInteraction = () => {
+          trumpVideoRef.current?.play();
+          document.removeEventListener('click', handleUserInteraction);
+        };
+        
+        document.addEventListener('click', handleUserInteraction);
+      });
+    }
+  }, [hasWon]);
 
   const handleStartGame = () => {
     // Try to unlock audio context first
@@ -402,7 +424,7 @@ const Game: React.FC = () => {
               {programs.map(renderProgram)}
             </ProgramGrid>
             <Footer>
-              2024 MAGA Mike's Medicaid Money Magic Math - All Rights Reserved
+              MAGA Mike's Medicaid Money Magic Math - An interactive budget-cutting game where players race against time to achieve $88 billion in budget reductions from Energy and Commerce Committee programs without touching Medicaid.
             </Footer>
           </ScrollContainer>
         </MainContent>
@@ -422,10 +444,18 @@ const Game: React.FC = () => {
             >
               <h2>{hasWon ? ' Game Over - Billionaires Win!' : ' Failed to Follow the Law!'}</h2>
               {hasWon ? (
-                <BillionaireBanner>
-                  <span> Billionaire Tax Avoidance Victory! </span>
-                  <span>While Public Programs Were Cut, The Ultra-Wealthy Saved ${(targetCuts * 1.5).toFixed(1)}B in Taxes</span>
-                </BillionaireBanner>
+                <div className="video-viewport">
+                  <video 
+                    ref={trumpVideoRef}
+                    autoPlay 
+                    loop 
+                    muted={false} // Enable audio
+                    playsInline
+                  >
+                    <source src={trumpVideo} type="video/quicktime" />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
               ) : (
                 <p style={{ fontSize: '1.1rem', marginBottom: '1rem', color: '#dc3545' }}>
                   The law requires exactly $88 Billion in cuts from the Energy and Commerce Committee.
@@ -436,6 +466,16 @@ const Game: React.FC = () => {
                   ? `Congratulations! You successfully cut $${currentCuts.toFixed(1)}B from public programs!`
                   : `You ${timeRemaining <= 0 ? 'ran out of time' : `only cut $${currentCuts.toFixed(1)}B`}. The law requires $${targetCuts}B in cuts - no exceptions!`}
               </p>
+              {hasWon ? (
+                <BillionaireBanner>
+                  <span>Billionaire Tax Avoidance Victory!</span>
+                  <span>
+                    While Public Programs Were Cut, The Ultra-Wealthy Saved ${(targetCuts * 1.5).toFixed(1)}B in Taxes
+                  </span>
+                </BillionaireBanner>
+              ) : (
+                <></>
+              )}
               <ControlButton onClick={handleStartGame}>
                 Play Again
               </ControlButton>
