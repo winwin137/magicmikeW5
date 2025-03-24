@@ -40,8 +40,11 @@ export const ScrollContainer = styled.div`
   min-height: 0;
   max-height: calc(100vh - 300px); /* Adjust height as needed */
   
-  @media (max-width: 768px) {
+   @media (max-width: 768px) {
     max-height: calc(100vh - 250px);
+    overscroll-behavior-y: none; /* Prevent scroll propagation on mobile */
+    position: relative;
+    z-index: 1;
   }
 `;
 
@@ -55,7 +58,7 @@ export const Header = styled.header`
   background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('/src/assets/images/trumpStealing.jpg');
   background-size: cover;
   background-position: center;
-  padding: 1rem 1rem 0.5rem;
+  padding: 0.25rem 0.5rem 0.1rem; 
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -70,10 +73,10 @@ export const HeaderContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1rem;
+  gap: 0.25rem; 
 
   @media (max-width: 768px) {
-    gap: 0.75rem;
+    gap: 0.1rem; 
   }
 `;
 
@@ -102,13 +105,14 @@ export const MediaRow = styled.div`
     gap: 1rem;
     flex-wrap: wrap;
     justify-content: space-between;
+    margin-top: 0.1rem; /* Added top margin for mobile */
   }
 `;
 
 export const TitleSection = styled.div`
   width: 100%;
   text-align: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.1rem; 
 `;
 
 export const VideoContainer = styled.div`
@@ -141,14 +145,14 @@ export const Title = styled.h1`
     -1px  1px 0 black,
      1px  1px 0 black,
      3px 3px 0 rgba(139, 0, 0, 0.3);
-  padding: 0 0.5rem;
+  padding: 1rem 0.1rem 0.1rem; 
   line-height: 1.1;
   hyphens: auto;
 
   @media (max-width: 480px) {
     font-size: clamp(1.2rem, 5vw, 1.4rem);
     letter-spacing: 0.5px;
-    padding: 0 0.25rem;
+    padding: 5rem 0.05rem 0.05rem; /* Added top padding only for mobile */
     word-spacing: -1px;
   }
 `;
@@ -165,13 +169,13 @@ export const Subtitle = styled.h2`
     -1px  1px 0 black,
      1px  1px 0 black,
      1px 1px 0 rgba(139, 0, 0, 0.2);
-  padding: 0 0.5rem;
+  padding: 0 0.1rem; 
   line-height: 1.2;
 
   @media (max-width: 480px) {
     font-size: clamp(0.9rem, 4vw, 1.1rem);
     letter-spacing: 0.5px;
-    padding: 0 0.25rem;
+    padding: 0 0.05rem; 
     line-height: 1.1;
   }
 `;
