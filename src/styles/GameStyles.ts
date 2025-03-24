@@ -105,7 +105,8 @@ export const MediaRow = styled.div`
     gap: 1rem;
     flex-wrap: wrap;
     justify-content: space-between;
-    margin-top: 0.1rem; /* Added top margin for mobile */
+    order: 3;
+    margin-top: 0.1rem;
   }
 `;
 
@@ -616,7 +617,7 @@ export const Modal = styled(motion.div)`
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   max-width: 90%;
   width: 400px;
-  height: 470px; /* Doubled from assumed 300px */
+  height: 600px; /* Doubled from assumed 300px */
   z-index: 1000;
   text-align: center;
   display: flex;
@@ -628,7 +629,7 @@ export const Modal = styled(motion.div)`
 /* New styles for video viewport */
   .video-viewport {
     width: 100%;
-    height: 220px; /* Adjust as needed */
+    height: 400px; /* Back to original height */
     margin: 1rem 0;
     overflow: hidden;
     border-radius: 8px;
@@ -639,7 +640,6 @@ export const Modal = styled(motion.div)`
     height: 100%;
     object-fit: cover;
   }
-
 
   h2 {
     font-family: 'Impact', 'Haettenschweiler', 'Franklin Gothic Bold', Charcoal, sans-serif;
@@ -655,11 +655,16 @@ export const Modal = styled(motion.div)`
   }
 
   @media (max-width: 480px) {
-    top: calc(50% - 100px);
+    top: 10vh;
     left: calc(50% - 150px - 2rem);
     padding: 1.5rem;
     max-width: 85%;
     gap: 0.75rem;
+    height: 580px; /* Reduced height for mobile */
+
+    .video-viewport {
+      height: 100px; /* Smaller video viewport for mobile */
+    }
   }
 `;
 

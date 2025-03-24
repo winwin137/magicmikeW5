@@ -458,12 +458,12 @@ const Game: React.FC = () => {
                 </div>
               ) : (
                 <p style={{ fontSize: '1.1rem', marginBottom: '1rem', color: '#dc3545' }}>
-                  The law requires exactly $88 Billion in cuts from the Energy and Commerce Committee.
+                  The law requires exactly $88 Billion in cuts from the Energy and Commerce Committee. - You race to make strategic budget cuts - Cut budgets in increments of $10 billion or $1 billion - Defund/Destroy one agency or program to save another - Victory is achieved by reaching exactly $88 billion in cuts which hurts the working class but fattens up the oligarchs - Don't touch Medicaid  was  and is a lie - People will needlessly die - Time's up = Game Over
                 </p>
               )}
               <p>
                 {hasWon
-                  ? `Congratulations! You successfully cut $${currentCuts.toFixed(1)}B from public programs!`
+                  ? `Congratulations! Now you understand how MAGA Mike will cut $${currentCuts.toFixed(1)}B from critical Federal Agencies - killing them - and still cut Medicaid without specifying Medicaid in Legislation`
                   : `You ${timeRemaining <= 0 ? 'ran out of time' : `only cut $${currentCuts.toFixed(1)}B`}. The law requires $${targetCuts}B in cuts - no exceptions!`}
               </p>
               {hasWon ? (
