@@ -397,12 +397,17 @@ const Game: React.FC = () => {
           </TitleSection>
           <MediaRow>
             <VideoContainer>
-              <MikeVideo
+              <MikeVideo 
                 ref={videoRef}
                 autoPlay
                 playsInline
+                controls
+                muted={isSoundEnabled ? false : true}
                 loop
-              />
+              >
+                <source src={challengeVideo} type="video/quicktime" />
+                Your browser does not support the video tag.
+              </MikeVideo>
             </VideoContainer>
             <Timer $timeRemaining={timeRemaining}>{timeRemaining}s</Timer>
           </MediaRow>

@@ -130,6 +130,38 @@ export const MikeVideo = styled.video`
   border-radius: 50%;
   border: 3px solid #bf0a30;
   background: #000;
+
+  // WebKit browsers
+  &::-webkit-media-controls-panel {
+    display: flex !important;
+    opacity: 1 !important;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    background: rgba(0,0,0,0.5);
+  }
+
+  &::-webkit-media-controls {
+    opacity: 1 !important;
+  }
+
+  &::-webkit-media-controls-timeline {
+    opacity: 1 !important;
+  }
+
+  // Firefox
+  &::-moz-media-controls-panel {
+    display: flex !important;
+    opacity: 1 !important;
+  }
+
+  // Microsoft Edge and Internet Explorer
+  &::-ms-media-controls-panel {
+    display: flex !important;
+    opacity: 1 !important;
+  }
 `;
 
 export const Title = styled.h1`
