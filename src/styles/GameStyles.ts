@@ -1,6 +1,11 @@
 import styled, { keyframes, css } from 'styled-components';
 import { motion } from 'framer-motion';
 import capitolImage from '../assets/images/capitol.jpg';
+import trumpStealingImage from '../assets/images/trumpStealing.jpg';
+
+const trumpStealingBg = import.meta.env.PROD 
+  ? '/images/trumpStealing.jpg' 
+  : trumpStealingImage;
 
 export const GameContainer = styled.div`
   display: flex;
@@ -55,7 +60,9 @@ export const Header = styled.header`
   right: 0;
   z-index: 100;
   background: #f5f5f5;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url('/src/assets/images/trumpStealing.jpg');
+  background-image: 
+    linear-gradient(rgba(230, 230, 230, 0.5), rgba(230, 230, 230, 0.5)), 
+    url(${trumpStealingBg});
   background-size: cover;
   background-position: center;
   padding: 0.25rem 0.5rem 0.1rem; 
